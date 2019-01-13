@@ -1,0 +1,25 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dangvanduc90
+ * Date: 01/13/2019
+ * Time: 12:34
+ */
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
+$connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
+$channel = $connection->channel();
+
+$data = implode(' ', array_slice($argv, 1));
+if (empty($data)) {
+    $data = "Hello World!";
+}
+$msg = new AMQPMessage($data);
+
+$channel->basic_publish($msg, '', 'hello');
+$channel->close();
+$connection->close();

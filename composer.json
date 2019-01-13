@@ -1,0 +1,13 @@
+{
+    "name": "dangvanduc90/rabbitmq-server",
+    "authors": [
+        {
+            "name": "dangvanduc90",
+            "email": "ducdangvan@vccorp.vn"
+        }
+    ],
+    "require": {
+		"videlalvaro/php-amqplib": "2.2.*",
+        "swiftmailer/swiftmailer": "@stable"
+	}
+}
