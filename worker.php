@@ -4,7 +4,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 $channel = $connection->channel();
 
-$channel->queue_declare('hello', false, false, false, false);
+$channel->queue_declare('task_queue', false, true, false, false);
 
 echo " [*] Waiting for messages. To exit press CTRL+C\n";
 $callback = function ($msg) {
@@ -14,8 +14,12 @@ $callback = function ($msg) {
     $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
 };
 
+// This tells RabbitMQ not to give more than one message to a worker at a time
+$channel->basic_qos(null, 1, null);
 $channel->basic_consume('hello', '', false, false, false, false, $callback);
 
 while (count($channel->callbacks)) {
     $channel->wait();
 }
+$channel->close();
+$connection->close();
